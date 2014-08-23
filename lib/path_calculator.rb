@@ -8,7 +8,8 @@ class PathCalculator < Struct.new(:origin, :destination)
 
     while !arrived?
       @paths = @paths.map do |path|
-        path.walk
+        visited_stations = @paths.map(&:visited_stations).flatten.uniq
+        path.walk(visited_stations: visited_stations)
       end.flatten
     end
   end

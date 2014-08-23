@@ -27,7 +27,14 @@ class Path
     @steps.last.name
   end
 
-  def walk
+  def visited_stations
+    #binding.pry
+    @steps.map(&:station).uniq
+  end
+
+  def walk(options = {})
+    skip_stations = options[:visited_stations]
+
     new_paths = []
 
     self.last_step.lines.each do |line|
@@ -39,12 +46,18 @@ class Path
       last_line = last_step.line
       next_line = line.line
       next if should_change_line? last_line, next_line, last_station, next_station
-      
+
+      next if skip_station? skip_stations, next_station
+
       new_path.add_step(line.line,next_station)
       new_paths << new_path
     end
 
-    @step = new_paths
+    new_paths
+  end
+
+  def skip_station? skip_stations, next_station
+    skip_stations.include? next_station if skip_stations
   end
 
   def contains? station
@@ -53,7 +66,7 @@ class Path
 
   def should_change_line? last_line, next_line, last_station, next_station
     lines = Line.by_stations(last_station, next_station)
-    
+
     should_change = (last_line != next_line && lines.map(&:line).include?(last_line))
     should_change
   end

@@ -1,5 +1,10 @@
-class PathCalculator < Struct.new(:origin, :destination)
-  attr_reader :all_paths
+class PathCalculator
+  attr_reader :all_paths, :origin, :destination
+
+  def initialize(origin_name, destination_name)
+    @origin = Station.find_by_name(origin_name)
+    @destination = Station.find_by_name(destination_name)
+  end
 
   def calculate
     first_path = Path.new

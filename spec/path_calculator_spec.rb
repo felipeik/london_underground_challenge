@@ -1,14 +1,9 @@
 require "./spec/spec_helper"
 
 describe PathCalculator do
-  let(:path_calculator) { PathCalculator.new(origin, destination) }
-
   context "when calculating path between Victoria and Sloane Square" do
     before :all do
-      origin = Station.find_by_name("Victoria")
-      destination = Station.find_by_name("Sloane Square")
-
-      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator = PathCalculator.new("Victoria", "Sloane Square")
       @path_calculator.calculate
     end
 
@@ -27,8 +22,8 @@ describe PathCalculator do
       expect(steps).to include [[0, "Victoria"], [11, "Green Park"]]
     end
 
-    it "returns path from origin to destination" do
-      path = @path_calculator.path
+    it "returns shortest path from origin to destination" do
+      path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }
 
@@ -38,10 +33,7 @@ describe PathCalculator do
 
   context "when calculating path between Victoria and Westminster" do
     before :all do
-      origin = Station.find_by_name("Victoria")
-      destination = Station.find_by_name("Westminster")
-
-      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator = PathCalculator.new("Victoria", "Westminster")
       @path_calculator.calculate
     end
 
@@ -67,7 +59,7 @@ describe PathCalculator do
       expect(steps).to include [[0, "Victoria"], [11, "Pimlico"], [11, "Vauxhall"]]
     end
 
-    it "returns path from origin to destination" do
+    it "returns shortest path from origin to destination" do
       path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }
@@ -78,14 +70,11 @@ describe PathCalculator do
 
   context "when calculating path between Victoria and Knightsbridge" do
     before :all do
-      origin = Station.find_by_name("Victoria")
-      destination = Station.find_by_name("Knightsbridge")
-
-      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator = PathCalculator.new("Victoria", "Knightsbridge")
       @path_calculator.calculate
     end
 
-    it "sets 20? paths" do
+    it "sets 20 paths" do
       paths = @path_calculator.all_paths
 
       steps = paths.map(&:steps).map { |step| step.map { |s| [s.line.to_i, s.name] } }
@@ -131,7 +120,7 @@ describe PathCalculator do
       expect(steps).to      include [[0, "Victoria"], [11, "Pimlico"],         [11, "Vauxhall"],          [11, "Stockwell"]]
     end
 
-    it "returns path from origin to destination" do
+    it "returns shortest path from origin to destination" do
       path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }
@@ -142,14 +131,11 @@ describe PathCalculator do
 
   context "when calculating path between Victoria and West Brompton" do
     before :all do
-      origin = Station.find_by_name("Victoria")
-      destination = Station.find_by_name("West Brompton")
-
-      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator = PathCalculator.new("Victoria", "West Brompton")
       @path_calculator.calculate
     end
 
-    it "returns path from origin to destination" do
+    it "returns shortest path from origin to destination" do
       path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }

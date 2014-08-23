@@ -11,6 +11,11 @@ class Line < Struct.new(:station1_id, :station2_id, :line)
     all.select { |line| line.station1 == station || line.station2 == station  }
   end
 
+  def self.by_stations(station_a, station_b)
+    all.select { |line| (line.station1 == station_a || line.station2 == station_a) && 
+                        (line.station1 == station_b || line.station2 == station_b) }
+  end
+
   def station1
     Station.find(station1_id)
   end

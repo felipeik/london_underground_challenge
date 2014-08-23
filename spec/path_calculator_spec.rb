@@ -12,15 +12,18 @@ describe PathCalculator do
     end
 
     it "sets 6 paths" do
-      expect(path_calculator.paths.size).to eql(6)
-    end
+      paths = path_calculator.paths
 
-    it "sets paths from Victoria" do
-      last_station_names = path_calculator.paths.map(&:last_station_name)
-      expect(last_station_names).to include("Sloane Square")
-      expect(last_station_names).to include("Green Park")
-      expect(last_station_names).to include("Pimlico")
-      expect(last_station_names).to include("St. James's Park")
+      expect(paths.size).to eql 6
+      
+      steps = paths.map(&:steps).map { |step| step.map { |s| [s.line.to_i, s.name] } }
+
+      expect(steps).to include [[0, "Victoria"], [3, "Sloane Square"]]
+      expect(steps).to include [[0, "Victoria"], [4, "Sloane Square"]]
+      expect(steps).to include [[0, "Victoria"], [11, "Pimlico"]]
+      expect(steps).to include [[0, "Victoria"], [3, "St. James's Park"]]
+      expect(steps).to include [[0, "Victoria"], [4, "St. James's Park"]]
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"]]
     end
 
     it "sets 2 level paths" do
@@ -40,11 +43,36 @@ describe PathCalculator do
       path_calculator.calculate
     end
 
-    it "sets 14 paths" do
-      expect(path_calculator.paths.size).to eql(14)
+    it "sets 11 paths" do
+      paths = path_calculator.paths
+
+      steps = paths.map(&:steps).map { |step| step.map { |s| [s.line.to_i, s.name] } }
+
+      expect(steps.size).to eql(10)
+      expect(steps).to include [[0, "Victoria"], [3, "Sloane Square"], [3, "South Kensington"]]
+      expect(steps).to include [[0, "Victoria"], [3, "St. James's Park"], [3, "Westminster"]]
+
+      expect(steps).to include [[0, "Victoria"], [4, "Sloane Square"], [4, "South Kensington"]]
+      expect(steps).to include [[0, "Victoria"], [4, "St. James's Park"], [4, "Westminster"]]
+
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"], [7, "Bond Street"]]
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"], [7, "Westminster"]]
+
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"], [10, "Hyde Park Corner"]]
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"], [10, "Picadilly Circus"]]
+      expect(steps).to include [[0, "Victoria"], [11, "Green Park"], [11, "Oxford Circus"]]
+
+      expect(steps).to include [[0, "Victoria"], [11, "Pimlico"], [11, "Vauxhall"]]
+
     end
 
-    it "sets 3 level paths" do
+    it "sets 3 level station paths" do
+      path_calculator.paths.each do |path|
+        expect(path.size).to eql(3)
+      end
+    end
+
+    it "sets 3 level station paths with line changes" do
       path_calculator.paths.each do |path|
         expect(path.size).to eql(3)
       end

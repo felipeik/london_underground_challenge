@@ -2,7 +2,9 @@ class PathCalculator < Struct.new(:origin, :destination)
   attr_reader :paths
 
   def calculate
-    @paths = [Path.new([origin])]
+    first_path = Path.new
+    first_path.add_step 0, origin
+    @paths = [first_path]
 
     while !arrived?
       @paths = @paths.map do |path|

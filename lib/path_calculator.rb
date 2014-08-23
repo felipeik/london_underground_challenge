@@ -2,20 +2,18 @@ class PathCalculator < Struct.new(:origin, :destination)
   attr_reader :paths
 
   def calculate
-    origin_path = Path.new([origin])
+    @paths = [Path.new([origin])]
 
-    calculated_paths = []
-
-    last_station = origin_path.last_station
-
-    last_station.lines.each do |line|
-      new_path = Path.new(origin_path.station_path)
-      next_station = line.next_station_from(last_station)
-
-      new_path.add_station(next_station)
-      calculated_paths << new_path
+    while !arrived?
+      @paths = @paths.map do |path|
+        path.walk
+      end.flatten
     end
+  end
 
-    @paths = calculated_paths
+  private
+
+  def arrived?
+    @paths.select { |path| path.contains? destination }.any?
   end
 end

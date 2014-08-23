@@ -3,16 +3,17 @@ require "./spec/spec_helper"
 describe PathCalculator do
   let(:path_calculator) { PathCalculator.new(origin, destination) }
 
-  before do
-    path_calculator.calculate
-  end
-
   context "when calculating path between Victoria and Sloane Square" do
-    let(:origin) { Station.find_by_name("Victoria") }
-    let(:destination) { Station.find_by_name("Sloane Square") }
+    before :all do
+      origin = Station.find_by_name("Victoria")
+      destination = Station.find_by_name("Sloane Square")
+
+      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator.calculate
+    end
 
     it "sets 6 paths" do
-      paths = path_calculator.paths
+      paths = @path_calculator.all_paths
 
       expect(paths.size).to eql 6
       
@@ -25,14 +26,27 @@ describe PathCalculator do
       expect(steps).to include [[0, "Victoria"], [4, "St. James's Park"]]
       expect(steps).to include [[0, "Victoria"], [11, "Green Park"]]
     end
+
+    it "returns path from origin to destination" do
+      path = @path_calculator.path
+      
+      steps = path.steps.map { |step| [step.line.to_i, step.name] }
+
+      expect(steps).to eql([[0, "Victoria"], [3, "Sloane Square"]])
+    end
   end
 
   context "when calculating path between Victoria and Westminster" do
-    let(:origin) { Station.find_by_name("Victoria") }
-    let(:destination) { Station.find_by_name("Westminster") }
+    before :all do
+      origin = Station.find_by_name("Victoria")
+      destination = Station.find_by_name("Westminster")
+
+      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator.calculate
+    end
 
     it "sets 10 paths" do
-      paths = path_calculator.paths
+      paths = @path_calculator.all_paths
 
       steps = paths.map(&:steps).map { |step| step.map { |s| [s.line.to_i, s.name] } }
 
@@ -52,15 +66,27 @@ describe PathCalculator do
 
       expect(steps).to include [[0, "Victoria"], [11, "Pimlico"], [11, "Vauxhall"]]
     end
+
+    it "returns path from origin to destination" do
+      path = @path_calculator.path
+      
+      steps = path.steps.map { |step| [step.line.to_i, step.name] }
+
+      expect(steps).to eql([[0, "Victoria"], [3, "St. James's Park"], [3, "Westminster"]])
+    end
   end
 
   context "when calculating path between Victoria and Knightsbridge" do
-    let(:origin) { Station.find_by_name("Victoria") }
+    before :all do
+      origin = Station.find_by_name("Victoria")
+      destination = Station.find_by_name("Knightsbridge")
 
-    let(:destination) { Station.find_by_name("Knightsbridge") }
+      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator.calculate
+    end
 
     it "sets 20? paths" do
-      paths = path_calculator.paths
+      paths = @path_calculator.all_paths
 
       steps = paths.map(&:steps).map { |step| step.map { |s| [s.line.to_i, s.name] } }
 
@@ -103,6 +129,14 @@ describe PathCalculator do
       expect(steps).to      include [[0, "Victoria"], [11, "Green Park"],      [11, "Oxford Circus"],    [11, "Warren Street"]]
 
       expect(steps).to      include [[0, "Victoria"], [11, "Pimlico"],         [11, "Vauxhall"],          [11, "Stockwell"]]
+    end
+
+    it "returns path from origin to destination" do
+      path = @path_calculator.path
+      
+      steps = path.steps.map { |step| [step.line.to_i, step.name] }
+
+      expect(steps).to eql([[0, "Victoria"], [3, "Sloane Square"], [3, "South Kensington"], [10, "Knightsbridge"]])
     end
   end
 end

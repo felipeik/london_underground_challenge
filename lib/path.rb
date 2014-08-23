@@ -28,7 +28,6 @@ class Path
   end
 
   def visited_stations
-    #binding.pry
     @steps.map(&:station).uniq
   end
 

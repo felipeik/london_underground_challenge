@@ -14,11 +14,15 @@ class PathCalculator < Struct.new(:origin, :destination)
     end
   end
 
-  def path
-    all_paths.select { |path| path.last_station == destination }.first
+  def shortest_path
+    possible_paths.sort { |last,current| last.line_changes <=> current.line_changes }.first
   end
 
   private
+
+  def possible_paths
+    all_paths.select { |path| path.last_station == destination }
+  end
 
   def arrived?
     self.all_paths.select { |path| path.contains? destination }.any?

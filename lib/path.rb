@@ -70,6 +70,17 @@ class Path
     should_change
   end
 
+  def line_changes
+    last_line = steps.first.line
+
+    changes = -1
+    steps.each do |step|
+      changes = changes + 1 if step.line != last_line
+      last_line = step.line
+    end
+    changes
+  end
+
   class Step < Struct.new(:line, :station)
     def lines
       station.lines

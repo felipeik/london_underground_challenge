@@ -68,7 +68,7 @@ describe PathCalculator do
     end
 
     it "returns path from origin to destination" do
-      path = @path_calculator.path
+      path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }
 
@@ -132,11 +132,30 @@ describe PathCalculator do
     end
 
     it "returns path from origin to destination" do
-      path = @path_calculator.path
+      path = @path_calculator.shortest_path
       
       steps = path.steps.map { |step| [step.line.to_i, step.name] }
 
       expect(steps).to eql([[0, "Victoria"], [3, "Sloane Square"], [3, "South Kensington"], [10, "Knightsbridge"]])
+    end
+  end
+
+  context "when calculating path between Victoria and West Brompton" do
+    before :all do
+      origin = Station.find_by_name("Victoria")
+      destination = Station.find_by_name("West Brompton")
+
+      @path_calculator = PathCalculator.new(origin, destination)
+      @path_calculator.calculate
+    end
+
+    it "returns path from origin to destination" do
+      path = @path_calculator.shortest_path
+      
+      steps = path.steps.map { |step| [step.line.to_i, step.name] }
+
+      expect(steps).to eql([[0, "Victoria"], [4, "Sloane Square"], [4, "South Kensington"], 
+                            [4, "Gloucester Road"], [4, "Earl's Court"], [4, "West Brompton"]])
     end
   end
 end

@@ -8,7 +8,9 @@ class Station < Struct.new(:id, :latitude, :longitude, :name, :display_name, :zo
   end
 
   def self.find_by_name(name)
-    all.select { |station| station.name == name }.first
+    station = all.select { |station| station.name == name }.first
+    raise "Station '#{name}' not found" if station.nil?
+    station
   end 
 
   def self.find(id)

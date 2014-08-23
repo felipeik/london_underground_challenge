@@ -3,6 +3,10 @@ class Path
     @steps = steps
   end
 
+  def readable_steps
+    @steps.map { |step| [step.line.to_i, step.name] }
+  end
+
   def size
     steps.size
   end

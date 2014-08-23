@@ -17,10 +17,17 @@ class PathCalculator
         path.walk(visited_stations: visited_stations)
       end.flatten
     end
+
+    @calculated = false
   end
 
   def shortest_path
+    calculate if !@calculated
     possible_paths.sort { |last,current| last.line_changes <=> current.line_changes }.first
+  end
+
+  def parsed_shortest_path
+    shortest_path.readable_steps
   end
 
   private
